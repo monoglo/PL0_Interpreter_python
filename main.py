@@ -14,7 +14,7 @@ class Interpreter:
         self.ignore = 0  # 初始化忽略sym标志
         self.num = 0  # 初始化数字
         self.tab = 0  # 初始化缩进标志
-        self.tabdepth =0  # 缩进深度
+        self.tabdepth = 0  # 缩进深度
         curr_dir = os.path.dirname(os.path.realpath(__file__))
         os.chdir(curr_dir)
         self.pl0file = open(fname, 'r')
@@ -32,7 +32,7 @@ class Interpreter:
 
     def getsym(self):
         while (self.ch == ' ' or self.ch == 10 or self.ch == 13
-            or self.ch == 9):
+                or self.ch == 9):
             self.getch()
         if (self.ch >= 'a' and self.ch <= 'z'):
             while (self.ch >= 'a' and self.ch <= 'z'):
@@ -66,7 +66,7 @@ class Interpreter:
         elif (self.ch == ','):
             self.sym = 'comma'
             self.getch()
-        
+
         print(self.sym)
 
     def output(self):
