@@ -24,13 +24,9 @@ class Interpreter:
         self.getch()
 
     def getch(self):
-        # 获取一个字符并后移游标
+        # 获取一个字符
         self.ch = self.pl0file.read(1)
         print(self.ch)
-
-    def watch():
-        # 获取游标后面的字符
-        print()
 
     def getsym(self):
         while (self.ch == ' ' or self.ch == 10 or self.ch == 13
@@ -88,7 +84,7 @@ class Interpreter:
             self.sym = 'right'
             self.getch()
 
-        print(self.sym)
+        print(self.sym)     # ! DEBUG
 
     def output(self):
         if (self.sym == 'var'):
@@ -155,7 +151,3 @@ class Interpreter:
 
     def listtostr(self, list):
         return ''.join(str(e) for e in list)
-
-
-a = Interpreter("pl0.txt")
-a.translate()
