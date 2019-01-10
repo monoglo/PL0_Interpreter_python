@@ -13,8 +13,10 @@ class Interpreter:
         self.str = []  # 初始化str
         self.ignore = 0  # 初始化忽略sym标志
         self.num = 0  # 初始化数字
-        self.tab = 0  # 初始化缩进标志
-        self.tabdepth = 0  # 缩进深度
+        self.tabdepth = 0  # 初始化缩进深度
+        self.pro = 0  # 初始化函数标志
+        self.begin = 0
+        self.sym = 'start'
         curr_dir = os.path.dirname(os.path.realpath(__file__))
         os.chdir(curr_dir)
         self.pl0file = open(fname, 'r')
@@ -57,14 +59,33 @@ class Interpreter:
             else:
                 self.sym = 'nul'
         elif (self.ch == ';'):
+            self.sym = 'semi'
             self.getch()
-            if (self.ch == '\n'):
-                self.sym = 'nextline'
-                self.getch()
+        elif (self.ch == '\n'):
+            self.sym = 'nextline'
+            self.getch()
         elif (self.ch == '.'):
             self.sym = 'pl0end'
         elif (self.ch == ','):
             self.sym = 'comma'
+            self.getch()
+        elif (self.ch == '+'):
+            self.sym = 'add'
+            self.getch()
+        elif (self.ch == '-'):
+            self.sym = 'sub'
+            self.getch()
+        elif (self.ch == '*'):
+            self.sym = 'multi'
+            self.getch()
+        elif (self.ch == '/'):
+            self.sym = 'div'
+            self.getch()
+        elif (self.ch == '('):
+            self.sym = 'left'
+            self.getch()
+        elif (self.ch == ')'):
+            self.sym = 'right'
             self.getch()
 
         print(self.sym)
@@ -79,12 +100,47 @@ class Interpreter:
             self.pyfile.write(str(self.num))
         elif (self.sym == 'becomes'):
             self.pyfile.write('=')
+        elif (self.sym == 'begin'):
+            self.ignore = 1
+            if (self.pro == 0):
+                self.begin += 1
+            else:
+                self.tabdepth += 1
+        elif (self.sym == 'end'):
+            if (self.pro == 0):
+                self.begin -= 1
+            else:
+                self.tabdepth -= 1
+        elif (self.sym == 'add'):
+            self.pyfile.write('+')
+        elif (self.sym == 'sub'):
+            self.pyfile.write('-')
+        elif (self.sym == 'multi'):
+            self.pyfile.write('*')
+        elif (self.sym == 'div'):
+            self.pyfile.write('/')
+        elif (self.sym == 'write'):
+            self.pyfile.write('print (')
+            self.str.clear()
+            self.getsym()
+            self.getsym()
+            self.pyfile.write(self.issym)
+            self.getsym()
+            self.pyfile.write(')')
 
-        if (self.sym == 'nextline' or self.sym == 'pl0end'):
+        # elif (self.sym == []):
+        #     pass
+        # else:
+        #     print('+++++++++' + self.sym)
+        #     self.pyfile.write('X')
+
+        if (self.sym == 'nextline'):
             if (self.ignore == 0):
                 self.pyfile.write('\n')
+                for i in range(0, self.tabdepth):
+                    self.pyfile.write(' ')
             self.ignore = 0
-        else:
+        elif (self.ch != ';' and self.ch != '.' and self.sym != 'semi'):
             if (self.ignore == 0):
                 self.pyfile.write(' ')
 
