@@ -1,5 +1,15 @@
 import os
 
+# PL0翻译器
+# 将PL0源语言翻译成Python语言
+# 词法分析、语法分析
+# __init__()        初始化
+# getch()           获取一个字符
+# getsym()          获取一个sym
+# output()          输出python语句
+# translate()       翻译器总控制
+# listtostr()       列表转字符串
+
 
 class Interpreter:
 
@@ -29,8 +39,9 @@ class Interpreter:
         print(self.ch)
 
     def getsym(self):
+        # 获取一个sym
         while (self.ch == ' ' or self.ch == 10 or self.ch == 13
-                or self.ch == 9):
+               or self.ch == 9):
             self.getch()
         if (self.ch >= 'a' and self.ch <= 'z'):
             while (self.ch >= 'a' and self.ch <= 'z'):
@@ -83,8 +94,11 @@ class Interpreter:
         elif (self.ch == ')'):
             self.sym = 'right'
             self.getch()
+        elif (self.ch == '='):
+            self.sym = 'equ'
+            self.getch()
 
-        print(self.sym)     # ! DEBUG
+        print(self.sym)  # ! DEBUG
 
     def output(self):
         if (self.sym == 'var'):
@@ -115,14 +129,22 @@ class Interpreter:
             self.pyfile.write('*')
         elif (self.sym == 'div'):
             self.pyfile.write('/')
+        elif (self.sym == 'equ'):
+            self.pyfile.write('==')
         elif (self.sym == 'write'):
-            self.pyfile.write('print (')
+            self.pyfile.write('print(')
             self.str.clear()
             self.getsym()
             self.getsym()
             self.pyfile.write(self.issym)
             self.getsym()
             self.pyfile.write(')')
+        elif (self.sym == 'if'):
+            self.tabdepth += 1
+            self.pyfile.write('if (')
+        elif (self.sym == 'then'):
+            self.pyfile.write('):')
+            self.sym = 'nextline'
 
         # elif (self.sym == []):
         #     pass
@@ -133,11 +155,15 @@ class Interpreter:
         if (self.sym == 'nextline'):
             if (self.ignore == 0):
                 self.pyfile.write('\n')
-                for i in range(0, self.tabdepth):
+                for i in range(0, 4 * self.tabdepth):
                     self.pyfile.write(' ')
             self.ignore = 0
-        elif (self.ch != ';' and self.ch != '.' and self.sym != 'semi'):
+            if (self.tabdepth > 0):
+                self.tabdepth -= 1
+        elif (self.ch != ';' and self.ch != '.' and self.ch != ' '
+                and self.sym != 'semi' and self.sym != 'if'):
             if (self.ignore == 0):
+                print('===========>' + self.ch)
                 self.pyfile.write(' ')
 
     def translate(self):
