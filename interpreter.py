@@ -41,7 +41,7 @@ class Interpreter:
     def getsym(self):
         # 获取一个sym
         while (self.ch == ' ' or self.ch == 10 or self.ch == 13
-               or self.ch == 9):
+                or self.ch == 9):
             self.getch()
         if (self.ch >= 'a' and self.ch <= 'z'):
             while (self.ch >= 'a' and self.ch <= 'z'):
